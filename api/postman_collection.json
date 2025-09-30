@@ -338,6 +338,194 @@
           }
         ]
       }
+    },
+    {
+      "name": "Reports - Attendance Weekly",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/reports/attendance/weekly?start=2025-10-01&session=SCHOOL",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "reports",
+            "attendance",
+            "weekly"
+          ],
+          "query": [
+            {
+              "key": "start",
+              "value": "2025-10-01"
+            },
+            {
+              "key": "session",
+              "value": "SCHOOL"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Reports - Attendance Monthly",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/reports/attendance/monthly?year=2025&month=10&session=SCHOOL",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "reports",
+            "attendance",
+            "monthly"
+          ],
+          "query": [
+            {
+              "key": "year",
+              "value": "2025"
+            },
+            {
+              "key": "month",
+              "value": "10"
+            },
+            {
+              "key": "session",
+              "value": "SCHOOL"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Reports - Top Absence",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/reports/attendance/top-absence?start=2025-10-01&end=2025-10-31&limit=5",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "reports",
+            "attendance",
+            "top-absence"
+          ],
+          "query": [
+            {
+              "key": "start",
+              "value": "2025-10-01"
+            },
+            {
+              "key": "end",
+              "value": "2025-10-31"
+            },
+            {
+              "key": "limit",
+              "value": "5"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Reports - Export CSV",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/reports/attendance/export/csv?start=2025-10-01&end=2025-10-31&session=SCHOOL",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "reports",
+            "attendance",
+            "export",
+            "csv"
+          ],
+          "query": [
+            {
+              "key": "start",
+              "value": "2025-10-01"
+            },
+            {
+              "key": "end",
+              "value": "2025-10-31"
+            },
+            {
+              "key": "session",
+              "value": "SCHOOL"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Reports - Export XLSX",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/reports/attendance/export/xlsx?start=2025-10-01&end=2025-10-31&session=SCHOOL",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "reports",
+            "attendance",
+            "export",
+            "xlsx"
+          ],
+          "query": [
+            {
+              "key": "start",
+              "value": "2025-10-01"
+            },
+            {
+              "key": "end",
+              "value": "2025-10-31"
+            },
+            {
+              "key": "session",
+              "value": "SCHOOL"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ]
+      }
     }
   ]
 }

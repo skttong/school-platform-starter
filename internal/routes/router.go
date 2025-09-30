@@ -27,6 +27,7 @@ func Register(r *gin.Engine, db *pgxpool.Pool, cfg *config.Config) {
 	attSvc := services.NewAttendanceService(db)
 	attH := handlers.NewAttendanceHandler(attSvc)
 	repH := handlers.NewAttendanceReportHandler(attSvc)
+	expH := handlers.NewAttendanceExportHandler(attSvc)
 
 	// Swagger UI + openapi.yaml
 	r.StaticFile("/openapi.yaml", "./api/openapi.yaml")
@@ -75,6 +76,16 @@ func Register(r *gin.Engine, db *pgxpool.Pool, cfg *config.Config) {
 			{
 				rep.GET("/daily", middleware.RequirePermission("ATTENDANCE_READ"), repH.Daily)
 				rep.GET("/classroom", middleware.RequirePermission("ATTENDANCE_READ"), repH.Classroom)
+				rep.GET("/weekly", middleware.RequirePermission("ATTENDANCE_READ"), repH.Weekly)
+				rep.GET("/monthly", middleware.RequirePermission("ATTENDANCE_READ"), repH.Monthly)
+				rep.GET("/top-absence", middleware.RequirePermission("ATTENDANCE_READ"), repH.TopAbsence)
+			}
+
+			// Exports
+			exp := protected.Group("/reports/attendance/export")
+			{
+				exp.GET("/csv", middleware.RequirePermission("ATTENDANCE_READ"), expH.CSV)
+				exp.GET("/xlsx", middleware.RequirePermission("ATTENDANCE_READ"), expH.XLSX)
 			}
 			att := protected.Group("/attendances")
 			{

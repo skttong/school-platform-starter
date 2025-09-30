@@ -360,6 +360,97 @@ paths:
                     total: 45
                     counts: { PRESENT: 41, ABSENT: 2, LATE: 1, LEAVE: 1 }
                     percent: { PRESENT: 91.11, ABSENT: 4.44, LATE: 2.22, LEAVE: 2.22 }
+
+  /api/reports/attendance/weekly:
+    get:
+      summary: Attendance summary (weekly range)
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - { in: query, name: start, schema: { type: string, format: date }, required: true }
+        - { in: query, name: session, schema: { type: string, enum: [SCHOOL, CLASS], default: SCHOOL } }
+        - { in: query, name: classroom_id, schema: { type: integer } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              examples:
+                sample:
+                  value:
+                    start: 2025-10-01
+                    end: 2025-10-07
+                    session: SCHOOL
+                    daily:
+                      2025-10-01: { PRESENT: 1100, ABSENT: 60, LATE: 30, LEAVE: 10 }
+                      2025-10-02: { PRESENT: 1090, ABSENT: 70, LATE: 25, LEAVE: 15 }
+  /api/reports/attendance/monthly:
+    get:
+      summary: Attendance summary (monthly range)
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - { in: query, name: year, schema: { type: integer }, required: true }
+        - { in: query, name: month, schema: { type: integer, minimum: 1, maximum: 12 }, required: true }
+        - { in: query, name: session, schema: { type: string, enum: [SCHOOL, CLASS], default: SCHOOL } }
+        - { in: query, name: classroom_id, schema: { type: integer } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              examples:
+                sample:
+                  value:
+                    start: 2025-10-01
+                    end: 2025-10-31
+                    session: SCHOOL
+                    daily:
+                      2025-10-01: { PRESENT: 1100, ABSENT: 60, LATE: 30, LEAVE: 10 }
+                      2025-10-02: { PRESENT: 1090, ABSENT: 70, LATE: 25, LEAVE: 15 }
+  /api/reports/attendance/top-absence:
+    get:
+      summary: Top absence (most ABSENT by student)
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - { in: query, name: start, schema: { type: string, format: date }, required: true }
+        - { in: query, name: end, schema: { type: string, format: date }, required: true }
+        - { in: query, name: limit, schema: { type: integer, default: 10 } }
+        - { in: query, name: classroom_id, schema: { type: integer } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              examples:
+                sample:
+                  value:
+                    start: 2025-10-01
+                    end: 2025-10-31
+                    limit: 5
+                    items:
+                      - { student_id: 12, absent: 7 }
+                      - { student_id: 3, absent: 6 }
+  /api/reports/attendance/export/csv:
+    get:
+      summary: Export attendance summary as CSV
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - { in: query, name: start, schema: { type: string, format: date }, required: true }
+        - { in: query, name: end, schema: { type: string, format: date }, required: true }
+        - { in: query, name: session, schema: { type: string, enum: [SCHOOL, CLASS], default: SCHOOL } }
+        - { in: query, name: classroom_id, schema: { type: integer } }
+      responses:
+        "200": { description: CSV file stream }
+  /api/reports/attendance/export/xlsx:
+    get:
+      summary: Export attendance summary as Excel (.xlsx)
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - { in: query, name: start, schema: { type: string, format: date }, required: true }
+        - { in: query, name: end, schema: { type: string, format: date }, required: true }
+        - { in: query, name: session, schema: { type: string, enum: [SCHOOL, CLASS], default: SCHOOL } }
+        - { in: query, name: classroom_id, schema: { type: integer } }
+      responses:
+        "200": { description: XLSX file stream }
 components:
   securitySchemes:
     bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }

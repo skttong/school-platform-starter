@@ -80,3 +80,50 @@ func (s *AttendanceService) SummaryClassroom(ctx context.Context, date time.Time
 		},
 	}, nil
 }
+
+
+func (s *AttendanceService) SummaryRange(ctx context.Context, start, end time.Time, session string, classroomID *int64) (map[string]any, error) {
+	q := `SELECT date, status, COUNT(*) FROM attendances WHERE date BETWEEN $1 AND $2 AND session=$3`
+	args := []any{start, end, session}
+	if classroomID != nil {
+		q += " AND classroom_id=$4"
+		args = append(args, *classroomID)
+	}
+	q += " GROUP BY date, status ORDER BY date"
+	rows, err := s.db.Query(ctx, q, args...)
+	if err != nil { return nil, err }
+	defer rows.Close()
+	total := int64(0)
+	daily := map[string]map[string]int64{}
+	for rows.Next() {
+		var d time.Time; var st string; var c int64
+		if err := rows.Scan(&d, &st, &c); err != nil { return nil, err }
+		key := d.Format("2006-01-02")
+		if _, ok := daily[key]; !ok { daily[key] = map[string]int64{"PRESENT":0,"ABSENT":0,"LATE":0,"LEAVE":0} }
+		daily[key][st] += c
+		total += c
+	}
+	return map[string]any{ "start": start.Format("2006-01-02"), "end": end.Format("2006-01-02"), "session": session, "classroom_id": classroomID, "daily": daily, "total_records": total }, nil
+}
+
+func (s *AttendanceService) TopAbsence(ctx context.Context, start, end time.Time, limit int, classroomID *int64) ([]map[string]any, error) {
+	q := `SELECT student_id, COUNT(*) as absent_count
+		FROM attendances WHERE date BETWEEN $1 AND $2 AND status='ABSENT'`
+	args := []any{start, end}
+	if classroomID != nil {
+		q += " AND classroom_id=$3"
+		args = append(args, *classroomID)
+	}
+	q += " GROUP BY student_id ORDER BY absent_count DESC, student_id ASC LIMIT %d"
+	q = fmt.Sprintf(q, limit)
+	rows, err := s.db.Query(ctx, q, args...)
+	if err != nil { return nil, err }
+	defer rows.Close()
+	var out []map[string]any
+	for rows.Next() {
+		var sid int64; var cnt int64
+		if err := rows.Scan(&sid, &cnt); err != nil { return nil, err }
+		out = append(out, map[string]any{ "student_id": sid, "absent": cnt })
+	}
+	return out, nil
+}

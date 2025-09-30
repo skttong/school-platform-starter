@@ -8,3 +8,5 @@ require (
 	github.com/jackc/pgx/v5 v5.6.0
 	github.com/joho/godotenv v1.5.1
 )
+
+require github.com/xuri/excelize/v2 v2.8.1

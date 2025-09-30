@@ -31,3 +31,10 @@ go run ./cmd/server
 ## Attendance Reports
 - `GET /api/reports/attendance/daily?date=YYYY-MM-DD&session=SCHOOL` — สรุปทั้งโรงเรียน (counts + percent)
 - `GET /api/reports/attendance/classroom?date=YYYY-MM-DD&session=CLASS&classroom_id=1` — สรุปเฉพาะห้อง
+
+
+## Attendance Reports (เพิ่ม)
+- Weekly: `GET /api/reports/attendance/weekly?start=YYYY-MM-DD&session=SCHOOL|CLASS[&classroom_id=]`
+- Monthly: `GET /api/reports/attendance/monthly?year=YYYY&month=MM&session=SCHOOL|CLASS[&classroom_id=]`
+- Top Absence: `GET /api/reports/attendance/top-absence?start=YYYY-MM-DD&end=YYYY-MM-DD&limit=10[&classroom_id=]`
+- Export: CSV `/api/reports/attendance/export/csv?...` และ Excel `/api/reports/attendance/export/xlsx?...`
