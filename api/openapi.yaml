@@ -1,0 +1,478 @@
+openapi: 3.0.3
+info:
+  title: School Platform Starter API
+  version: 1.0.0
+  description: REST API for authentication, students, classrooms, and enrollments
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/auth/login:
+    post:
+      summary: Login and receive JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [Email, Password]
+              properties:
+                Email: { type: string, format: email }
+                Password: { type: string, format: password }
+            example:
+              Email: admin@example.com
+              Password: Admin@123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token: { type: string }
+              examples:
+                success:
+                  value:
+                    access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        "401":
+          description: invalid credentials
+  /api/me:
+    get:
+      summary: Get current JWT claims
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: OK
+  /api/students:
+    get:
+      summary: List students
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: query
+          name: q
+          schema: { type: string }
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: page_size
+          schema: { type: integer, default: 20 }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              examples:
+                list:
+                  value:
+                    items:
+                      - id: 1
+                        student_code: ST-2025-0001
+                        first_name: สมชาย
+                        last_name: ใจดี
+                        gender: M
+                        status: ACTIVE
+                      - id: 2
+                        student_code: ST-2025-0002
+                        first_name: สมหญิง
+                        last_name: อารีย์
+                        gender: F
+                        status: ACTIVE
+                    total: 2
+                    page: 1
+                    page_size: 20
+    post:
+      summary: Create student
+      security: [ { bearerAuth: [] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+            example:
+              student_code: ST-2025-0001
+              first_name: สมชาย
+              last_name: ใจดี
+              gender: M
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              examples:
+                created:
+                  value:
+                    id: 1
+                    student_code: ST-2025-0001
+                    first_name: สมชาย
+                    last_name: ใจดี
+                    gender: M
+                    status: ACTIVE
+  /api/students/{id}:
+    get:
+      summary: Get student by ID
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              examples:
+                list:
+                  value:
+                    items:
+                      - id: 1
+                        student_code: ST-2025-0001
+                        first_name: สมชาย
+                        last_name: ใจดี
+                        gender: M
+                        status: ACTIVE
+                      - id: 2
+                        student_code: ST-2025-0002
+                        first_name: สมหญิง
+                        last_name: อารีย์
+                        gender: F
+                        status: ACTIVE
+                    total: 2
+                    page: 1
+                    page_size: 20
+        "404": { description: Not found }
+    put:
+      summary: Update student
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+      responses:
+        "204":
+          description: No Content
+    delete:
+      summary: Delete student
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "204":
+          description: No Content
+          content:
+            application/json:
+              examples:
+                deleted:
+                  value: null
+  /api/classrooms:
+    get:
+      summary: List classrooms
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: query
+          name: q
+          schema: { type: string }
+        - in: query
+          name: year
+          schema: { type: integer }
+        - in: query
+          name: term
+          schema: { type: integer }
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: page_size
+          schema: { type: integer, default: 20 }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              examples:
+                list:
+                  value:
+                    items:
+                      - id: 1
+                        student_code: ST-2025-0001
+                        first_name: สมชาย
+                        last_name: ใจดี
+                        gender: M
+                        status: ACTIVE
+                      - id: 2
+                        student_code: ST-2025-0002
+                        first_name: สมหญิง
+                        last_name: อารีย์
+                        gender: F
+                        status: ACTIVE
+                    total: 2
+                    page: 1
+                    page_size: 20
+    post:
+      summary: Create classroom
+      security: [ { bearerAuth: [] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Classroom'
+            example:
+              code: CL-2025-1-1
+              name: ม.1/1
+              year: 2025
+              term: 1
+              capacity: 45
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              examples:
+                created:
+                  value:
+                    id: 1
+                    code: CL-2025-1-1
+                    name: ม.1/1
+                    year: 2025
+                    term: 1
+                    capacity: 45
+  /api/classrooms/{id}:
+    get:
+      summary: Get classroom
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              examples:
+                list:
+                  value:
+                    items:
+                      - id: 1
+                        student_code: ST-2025-0001
+                        first_name: สมชาย
+                        last_name: ใจดี
+                        gender: M
+                        status: ACTIVE
+                      - id: 2
+                        student_code: ST-2025-0002
+                        first_name: สมหญิง
+                        last_name: อารีย์
+                        gender: F
+                        status: ACTIVE
+                    total: 2
+                    page: 1
+                    page_size: 20
+        "404": { description: Not found }
+    put:
+      summary: Update classroom
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Classroom'
+      responses:
+        "204":
+          description: No Content
+    delete:
+      summary: Delete classroom
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "204":
+          description: No Content
+          content:
+            application/json:
+              examples:
+                deleted:
+                  value: null
+  /api/enrollments:
+    post:
+      summary: Enroll student to classroom
+      security: [ { bearerAuth: [] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [student_id, classroom_id, year, term]
+              properties:
+                student_id: { type: integer }
+                classroom_id: { type: integer }
+                year: { type: integer }
+                term: { type: integer }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              examples:
+                created:
+                  value:
+                    id: 1
+                    student_id: 1
+                    classroom_id: 1
+                    year: 2025
+                    term: 1
+                    status: ENROLLED
+  /api/enrollments/{id}/status:
+    put:
+      summary: Update enrollment status
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [ENROLLED, DROPPED, TRANSFERRED, COMPLETED] }
+      responses:
+        "204":
+          description: No Content
+  /api/enrollments/by-classroom/{classroom_id}:
+    get:
+      summary: List enrollments by classroom
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: classroom_id
+          required: true
+          schema: { type: integer }
+        - in: query
+          name: year
+          schema: { type: integer }
+        - in: query
+          name: term
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              examples:
+                list:
+                  value:
+                    items:
+                      - id: 1
+                        student_code: ST-2025-0001
+                        first_name: สมชาย
+                        last_name: ใจดี
+                        gender: M
+                        status: ACTIVE
+                      - id: 2
+                        student_code: ST-2025-0002
+                        first_name: สมหญิง
+                        last_name: อารีย์
+                        gender: F
+                        status: ACTIVE
+                    total: 2
+                    page: 1
+                    page_size: 20
+  /api/enrollments/by-student/{student_id}:
+    get:
+      summary: List enrollments by student
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: student_id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              examples:
+                list:
+                  value:
+                    items:
+                      - id: 1
+                        student_code: ST-2025-0001
+                        first_name: สมชาย
+                        last_name: ใจดี
+                        gender: M
+                        status: ACTIVE
+                      - id: 2
+                        student_code: ST-2025-0002
+                        first_name: สมหญิง
+                        last_name: อารีย์
+                        gender: F
+                        status: ACTIVE
+                    total: 2
+                    page: 1
+                    page_size: 20
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Student:
+      type: object
+      required: [student_code, first_name, last_name]
+      properties:
+        student_code: { type: string }
+        prefix: { type: string }
+        first_name: { type: string }
+        last_name: { type: string }
+        gender: { type: string }
+        birth_date: { type: string, format: date }
+        citizen_id: { type: string }
+        phone: { type: string }
+        email: { type: string, format: email }
+        address: { type: string }
+        guardian_name: { type: string }
+        guardian_phone: { type: string }
+        status: { type: string, default: ACTIVE }
+    Classroom:
+      type: object
+      required: [code, name, year, term]
+      properties:
+        code: { type: string }
+        name: { type: string }
+        grade: { type: string }
+        year: { type: integer }
+        term: { type: integer }
+        homeroom_teacher: { type: string }
+        capacity: { type: integer, default: 50 }

@@ -1,0 +1,215 @@
+{
+  "info": {
+    "name": "School Platform Starter",
+    "_postman_id": "e5bc8b6b-0000-4000-9000-aaaaaaaaaaaa",
+    "description": "Postman collection for auth, students, classrooms, enrollments",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth - Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"Email\": \"admin@example.com\", \"Password\": \"Admin@123\"}"
+        }
+      }
+    },
+    {
+      "name": "Me (claims)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/me"
+      }
+    },
+    {
+      "name": "Students - List",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/students?q=&page=1&page_size=20",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "students"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": ""
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "page_size",
+              "value": "20"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Students - Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/students",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"student_code\": \"ST-2025-0001\", \"first_name\": \"\\u0e2a\\u0e21\\u0e0a\\u0e32\\u0e22\", \"last_name\": \"\\u0e43\\u0e08\\u0e14\\u0e35\", \"gender\": \"M\"}"
+        }
+      }
+    },
+    {
+      "name": "Classrooms - List",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/classrooms?year=2025&term=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "classrooms"
+          ],
+          "query": [
+            {
+              "key": "year",
+              "value": "2025"
+            },
+            {
+              "key": "term",
+              "value": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Classrooms - Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/classrooms",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"code\": \"CL-2025-1-1\", \"name\": \"\\u0e21.1/1\", \"year\": 2025, \"term\": 1, \"capacity\": 45}"
+        }
+      }
+    },
+    {
+      "name": "Enrollments - Enroll",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/enrollments",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"student_id\": 1, \"classroom_id\": 1, \"year\": 2025, \"term\": 1}"
+        }
+      }
+    },
+    {
+      "name": "Enrollments - By Classroom",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/enrollments/by-classroom/1?year=2025&term=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "enrollments",
+            "by-classroom",
+            "1"
+          ],
+          "query": [
+            {
+              "key": "year",
+              "value": "2025"
+            },
+            {
+              "key": "term",
+              "value": "1"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
