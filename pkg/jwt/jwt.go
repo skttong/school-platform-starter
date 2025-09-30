@@ -2,8 +2,7 @@ package jwt
 
 import (
 	"time"
-
-	"github.com/golang-jwt/jwt/v5"
+	jwtv5 "github.com/golang-jwt/jwt/v5"
 )
 
 type Manager struct {
@@ -17,15 +16,15 @@ func New(secret, iss string, expireH int) *Manager {
 }
 
 func (m *Manager) Sign(sub string, extra map[string]any) (string, error) {
-	claims := jwt.MapClaims{ "sub": sub, "iss": m.iss, "iat": time.Now().Unix(), "exp": time.Now().Add(m.expH).Unix() }
+	claims := jwtv5.MapClaims{"sub": sub, "iss": m.iss, "iat": time.Now().Unix(), "exp": time.Now().Add(m.expH).Unix()}
 	for k, v := range extra { claims[k] = v }
-	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	t := jwtv5.NewWithClaims(jwtv5.SigningMethodHS256, claims)
 	return t.SignedString(m.secret)
 }
 
-func (m *Manager) Verify(token string) (jwt.MapClaims, error) {
-	t, err := jwt.Parse(token, func(t *jwt.Token) (any, error) { return m.secret, nil })
+func (m *Manager) Verify(token string) (jwtv5.MapClaims, error) {
+	t, err := jwtv5.Parse(token, func(t *jwtv5.Token) (any, error) { return m.secret, nil })
 	if err != nil || !t.Valid { return nil, err }
-	if claims, ok := t.Claims.(jwt.MapClaims); ok { return claims, nil }
-	return nil, jwt.ErrTokenMalformed
+	if claims, ok := t.Claims.(jwtv5.MapClaims); ok { return claims, nil }
+	return nil, jwtv5.ErrTokenMalformed
 }
