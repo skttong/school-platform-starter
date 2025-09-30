@@ -2,7 +2,6 @@
   "info": {
     "name": "School Platform Starter",
     "_postman_id": "e5bc8b6b-0000-4000-9000-aaaaaaaaaaaa",
-    "description": "Postman collection for auth, students, classrooms, enrollments",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -209,6 +208,135 @@
             }
           ]
         }
+      }
+    },
+    {
+      "name": "Attendance - List",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/attendances?date=2025-10-01&session=CLASS&classroom_id=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "attendances"
+          ],
+          "query": [
+            {
+              "key": "date",
+              "value": "2025-10-01"
+            },
+            {
+              "key": "session",
+              "value": "CLASS"
+            },
+            {
+              "key": "classroom_id",
+              "value": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Attendance - Record",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/attendances",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"student_id\": 1, \"classroom_id\": 1, \"date\": \"2025-10-01\", \"session\": \"CLASS\", \"status\": \"PRESENT\", \"note\": \"\\u0e21\\u0e32\\u0e40\\u0e0a\\u0e49\\u0e32\"}"
+        }
+      }
+    },
+    {
+      "name": "Reports - Attendance Daily",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/reports/attendance/daily?date=2025-10-01&session=SCHOOL",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "reports",
+            "attendance",
+            "daily"
+          ],
+          "query": [
+            {
+              "key": "date",
+              "value": "2025-10-01"
+            },
+            {
+              "key": "session",
+              "value": "SCHOOL"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Reports - Attendance Classroom",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/reports/attendance/classroom?date=2025-10-01&session=CLASS&classroom_id=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "reports",
+            "attendance",
+            "classroom"
+          ],
+          "query": [
+            {
+              "key": "date",
+              "value": "2025-10-01"
+            },
+            {
+              "key": "session",
+              "value": "CLASS"
+            },
+            {
+              "key": "classroom_id",
+              "value": "1"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ]
       }
     }
   ]

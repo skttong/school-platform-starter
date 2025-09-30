@@ -24,20 +24,15 @@ func Register(r *gin.Engine, db *pgxpool.Pool, cfg *config.Config) {
 	regSvc := services.NewRegistrarService(db)
 	regH := handlers.NewRegistrarHandler(regSvc)
 
-	
-	// OpenAPI docs & Swagger UI
+	attSvc := services.NewAttendanceService(db)
+	attH := handlers.NewAttendanceHandler(attSvc)
+	repH := handlers.NewAttendanceReportHandler(attSvc)
+
+	// Swagger UI + openapi.yaml
 	r.StaticFile("/openapi.yaml", "./api/openapi.yaml")
 	r.GET("/docs", func(c *gin.Context) {
-		html := `<!DOCTYPE html><html><head><meta charset="utf-8"/>
-		<title>API Docs</title>
-		<link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css" />
-		</head><body>
-		<div id="swagger-ui"></div>
-		<script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
-		<script>
-		window.onload = () => { window.ui = SwaggerUIBundle({ url: '/openapi.yaml', dom_id: '#swagger-ui' }); };
-		</script></body></html>`
-		c.Data(200, "text/html; charset=utf-8", []byte(html))
+		h := `<!DOCTYPE html><html><head><meta charset="utf-8"/><title>API Docs</title><link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css"/></head><body><div id="swagger-ui"></div><script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script><script>window.onload=()=>{window.ui=SwaggerUIBundle({url:'/openapi.yaml',dom_id:'#swagger-ui'});};</script></body></html>`
+		c.Data(200, "text/html; charset=utf-8", []byte(h))
 	})
 
 	api := r.Group("/api")
@@ -70,9 +65,21 @@ func Register(r *gin.Engine, db *pgxpool.Pool, cfg *config.Config) {
 			en := protected.Group("/enrollments")
 			{
 				en.POST("", middleware.RequirePermission("ENROLLMENT_WRITE"), regH.Enroll)
-				en.PUT(":/id/status", middleware.RequirePermission("ENROLLMENT_WRITE"), regH.UpdateStatus)
+				en.PUT("/:id/status", middleware.RequirePermission("ENROLLMENT_WRITE"), regH.UpdateStatus)
 				en.GET("/by-classroom/:classroom_id", middleware.RequirePermission("ENROLLMENT_READ"), regH.ListByClassroom)
 				en.GET("/by-student/:student_id", middleware.RequirePermission("ENROLLMENT_READ"), regH.ListByStudent)
+			}
+
+
+			rep := protected.Group("/reports/attendance")
+			{
+				rep.GET("/daily", middleware.RequirePermission("ATTENDANCE_READ"), repH.Daily)
+				rep.GET("/classroom", middleware.RequirePermission("ATTENDANCE_READ"), repH.Classroom)
+			}
+			att := protected.Group("/attendances")
+			{
+				att.POST("", middleware.RequirePermission("ATTENDANCE_WRITE"), attH.Record)
+				att.GET("", middleware.RequirePermission("ATTENDANCE_READ"), attH.ListByDate)
 			}
 		}
 	}

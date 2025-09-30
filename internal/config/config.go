@@ -22,18 +22,14 @@ func Load() *Config {
 }
 
 func env(key, def string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
-	}
+	if v := os.Getenv(key); v != "" { return v }
 	return def
 }
 func envInt(key string, def int) int {
 	if v := os.Getenv(key); v != "" {
 		var out int
 		_, _ = fmt.Sscanf(v, "%d", &out)
-		if out != 0 {
-			return out
-		}
+		if out != 0 { return out }
 	}
 	return def
 }

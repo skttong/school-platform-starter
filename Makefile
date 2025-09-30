@@ -1,4 +1,4 @@
-.PHONY: run dev tidy migrate-up seed
+.PHONY: run dev tidy migrate-up seed fmt vet lint sec test ci hook-install
 
 run:
 	APP_PORT?=8080
@@ -15,7 +15,6 @@ migrate-up:
 
 seed:
 	psql "$$DATABASE_URL" -f migrations/0002_seed_rbac.sql
-
 
 fmt:
 	go fmt ./...

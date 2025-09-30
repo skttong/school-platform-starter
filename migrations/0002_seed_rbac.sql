@@ -11,13 +11,11 @@ INSERT INTO permissions (code, name) VALUES
   ('STUDENT_WRITE','Write Students')
 ON CONFLICT DO NOTHING;
 
--- map ADMIN to all current permissions
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id FROM roles r, permissions p
 WHERE r.code='ADMIN'
 ON CONFLICT DO NOTHING;
 
--- demo user: admin@example.com / Admin@123 (sha256 DEMO ให้เปลี่ยน)
 INSERT INTO users (email, password, full_name)
 VALUES ('admin@example.com', 'REPLACE_WITH_SHA256_FROM_cmd_hash', 'System Admin')
 ON CONFLICT DO NOTHING;

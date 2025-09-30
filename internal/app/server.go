@@ -25,7 +25,6 @@ func NewServer() *Server {
 	r.GET("/health", func(c *gin.Context) { c.JSON(200, gin.H{"ok": true}) })
 
 	routes.Register(r, db, cfg)
-
 	return &Server{engine: r, cfg: cfg}
 }
 

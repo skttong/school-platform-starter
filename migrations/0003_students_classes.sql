@@ -1,4 +1,3 @@
--- Students
 CREATE TABLE IF NOT EXISTS students (
   id BIGSERIAL PRIMARY KEY,
   student_code TEXT UNIQUE NOT NULL,
@@ -17,8 +16,6 @@ CREATE TABLE IF NOT EXISTS students (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-
--- Classrooms
 CREATE TABLE IF NOT EXISTS classrooms (
   id BIGSERIAL PRIMARY KEY,
   code TEXT UNIQUE NOT NULL,
@@ -31,8 +28,6 @@ CREATE TABLE IF NOT EXISTS classrooms (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-
--- Enrollments
 CREATE TABLE IF NOT EXISTS enrollments (
   id BIGSERIAL PRIMARY KEY,
   student_id BIGINT NOT NULL REFERENCES students(id) ON DELETE CASCADE,
@@ -43,7 +38,6 @@ CREATE TABLE IF NOT EXISTS enrollments (
   enrolled_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   UNIQUE(student_id, classroom_id, year, term)
 );
-
 CREATE INDEX IF NOT EXISTS idx_students_name ON students (last_name, first_name);
 CREATE INDEX IF NOT EXISTS idx_classrooms_year_term ON classrooms (year, term);
 CREATE INDEX IF NOT EXISTS idx_enrollments_student ON enrollments (student_id);
